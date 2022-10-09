@@ -1,15 +1,13 @@
 package br.com.jgbank.modelo;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.math.BigDecimal;
-
+import static java.math.BigDecimal.*;
 public abstract class Conta implements IConta {
 
     private int agencia;
     private int numero;
     private Cliente cliente;
-    private BigDecimal saldo;
+    private BigDecimal saldo = ZERO;
 
     public int getAgencia() {
         return agencia;
@@ -43,7 +41,7 @@ public abstract class Conta implements IConta {
     public void saca(double valor) {
         var valorBigDecimal = converteValor(valor);
         if (this.saldo.compareTo(valorBigDecimal) >= 0) {
-            if (valorBigDecimal.compareTo(BigDecimal.ZERO) > 0) {
+            if (valorBigDecimal.compareTo(ZERO) > 0) {
                 this.saldo.subtract(valorBigDecimal);
             } else System.out.println("Valor inválido");
         } else System.out.println("Saldo insuficiente");
@@ -59,15 +57,11 @@ public abstract class Conta implements IConta {
     }
 
     @Override
-    public void transfere(double valor, @NotNull IConta destino) {
-        saca(valor);
+    public void transfere(double valor, IConta destino) {
+        this.saca(valor);
         destino.deposita(valor);
     }
 
-    @Override
-    public void imprimeExtrato() {
-
-    }
     
     private BigDecimal converteValor (double valor) {
         String valorString = String.valueOf(valor);
